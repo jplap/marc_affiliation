@@ -1,12 +1,15 @@
 const dotenv = require("dotenv");
-var mariadb = require('mariadb');
-var mysql = require('mysql');
+
+
 var path = require('path');
 import {Database} from "./Database";
 
+
+var PREFIX = "idController: ";
+
 //var direnv = __dirname + '/../config.env'
 var direnv = path.join(__dirname, '..', 'config.env')
-console.log("direnv: " + direnv);
+console.log(PREFIX + "direnv: " + direnv);
 dotenv.config({path: direnv});
 
 console.log("DB_HOST: " + process.env.DB_HOST);
@@ -27,14 +30,12 @@ var database = new Database({
 })
 
 
-const https = require('https');
-var PREFIX = "idController: ";
+
 
 
 exports.fetch = function (req, res) {
     console.log(PREFIX + "fetch");
 
-    let someRows, otherRows;
 
     database.query('SELECT * FROM ' + DB_TABLE)
         .then(rows => {
@@ -61,7 +62,7 @@ exports.delete = function (req, res) {
     database.query('DELETE FROM ' + DB_TABLE + ' WHERE ' + " id = " + idToDelete)
         .then(rows => {
             operationStatus = true;
-            if (operationStatus == false) {
+            if (operationStatus === false) {
                 console.log(PREFIX + "delete id:" + idToDelete + " failed")
                 res.status(204);
             } else {
@@ -82,8 +83,8 @@ exports.add = function (req, res) {
     }
     //var size = Object.keys(data);
     if (data != null && data.length > 0) {
-        foo.results.push(data[0]);
-    }
+
+
 
     database.query("INSERT INTO " + DB_TABLE + " (formid,name,state)" + " VALUES ('" + data[0].id + "','" + data[0].name + "'," + 0 + ")")
         .then(rows => {
@@ -92,7 +93,10 @@ exports.add = function (req, res) {
 
         })
 
-
+    }else{
+        console.log(PREFIX + "add failed. no data in input")
+        res.status(204);
+    }
     res.send();
 
 }
@@ -101,7 +105,6 @@ exports.setStatus = function (req, res) {
     const id = req.params.id;
     const newstatus = req.params.status;
 
-    var j = 0
 
     database.query('UPDATE ' + DB_TABLE + ' SET state = ' + newstatus + ' WHERE ' + " id = " + id)
         .then(rows => {
@@ -117,7 +120,7 @@ exports.setStatus = function (req, res) {
 
 exports.action = function (req, res) {
     var data = req.body;
-    var operationStatus = false;
+
     var id = -1;
 
     if (data && !data.id) {
@@ -130,14 +133,37 @@ exports.action = function (req, res) {
         id = data.id;
         var newstatus = 2;
 
-        database.query('UPDATE ' + DB_TABLE + ' SET state = ' + newstatus + ' WHERE ' + " id = " + id)
-            .then(rows => {
+        advertiserCaller().then((response) => {
+
+            if (response.headers['content-type']) {
+                res.setHeader('content-type', response.headers['content-type']);
+            }
+            /*
+           if (response.headers['transfer-encoding']) {
+               res.setHeader('transfer-encoding', response.headers['transfer-encoding']);
+           }
+
+            */
+            console.log(PREFIX + " affilae response successfull");
+            database.query('UPDATE ' + DB_TABLE + ' SET state = ' + newstatus + ' WHERE ' + " id = " + id)
+                .then(rows => {
 
 
-                console.log(PREFIX + "action : " + newstatus + " on id:" + id)
-                res.send();
+                    console.log(PREFIX + "action : " + newstatus + " on id:" + id)
+                    res.send(response.body);
+                })
+            //res.send(response.body);
+        }, function(erreur) {
+            res.status(500).send('affilae response failed: ' + erreur);
+        })
 
-            })
+
+            /*
+
+*/
+
+
+
 
     }
 
