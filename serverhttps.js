@@ -9,9 +9,12 @@ var options = {
     cert: fs.readFileSync(__dirname+'/server.cert')
 };
 
+var port = process.env.PORT || 8686;
 
-let port = 8686;
+
 var httpsServer = https.createServer(options, app);
 require = require("esm")(module/* , options */)
-console.log ("listen port:"+ port)
-httpsServer.listen(port);
+
+httpsServer.listen(port,function(){
+    console.log('Server running at http://127.0.0.1:' + port + '/');
+})
