@@ -13,7 +13,6 @@ CREATE TABLE `uuidformTable` (
   `state` int(2) DEFAULT 0,
   `historyChild` int(2) DEFAULT 0,
   `affilae_data` json,
-  `affilae_conversion` json,
   `insersionDB_date` TIMESTAMP  NOT NULL,
   `creation_date` int(11) NOT NULL,
 
@@ -23,7 +22,7 @@ CREATE TABLE `uuidformTable` (
 
 LOCK TABLES `uuidformTable` WRITE;
 
-INSERT INTO `uuidformTable` VALUES (1,'123','programme bidon','6086a6b8e302e67e42610b68', 0,1,'[{"title":"Focus, L\u0027\u00e9cole de pr\u00e9paration mentale","url":"https:\/\/www.focus-formations.com\/","slug":"focus-lecole-de-preparation-mentale","id":"6086a6b8e302e67e42610b68"},{"title":"Test","url":"https:\/\/www.focus-formations.com\/","slug":"test-200","id":"60981dc7d7eeec36352d830b"}]','[{"title":"Focus, L\u0027\u00e9cole de pr\u00e9paration mentale","url":"https:\/\/www.focus-formations.com\/","slug":"focus-lecole-de-preparation-mentale","id":"6086a6b8e302e67e42610b68"},{"title":"Test","url":"https:\/\/www.focus-formations.com\/","slug":"test-200","id":"60981dc7d7eeec36352d830b"}]',NOW(),1225540800);
+INSERT INTO `uuidformTable` VALUES (1,'123','programme bidon','6086a6b8e302e67e42610b68', 0,1,'[{"title":"Focus, L\u0027\u00e9cole de pr\u00e9paration mentale","url":"https:\/\/www.focus-formations.com\/","slug":"focus-lecole-de-preparation-mentale","id":"6086a6b8e302e67e42610b68"},{"title":"Test","url":"https:\/\/www.focus-formations.com\/","slug":"test-200","id":"60981dc7d7eeec36352d830b"}]',NOW(),1225540800);
 
 UNLOCK TABLES;
 

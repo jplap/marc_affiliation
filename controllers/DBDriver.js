@@ -215,6 +215,78 @@ class DBDriver {
         } );
 
     }
+    DBDriver_addInHistory ( id, theNewFormId, theStrValue ){
+
+
+
+        return new Promise( ( resolve, reject ) => {
+            try {
+
+                var SQLInsertHistory = "INSERT INTO " + DB_TABLE_IDFORM_HISTORY + " (formid_original,formid,affilae_conversion)" + " VALUES ('" + id + "','" + theNewFormId + "','" + theStrValue + "')"
+
+                console.log( "DBDriver_addInHistory: " + SQLInsertHistory );
+                this.query(SQLInsertHistory)
+                    .then(rows => {
+
+                        resolve(rows);
+
+
+                    }, function (error) {
+
+
+                        console.log(PREFIX + "DBDriver_addInHistory history select failed: " + JSON.stringify(error));
+                        reject(error);
+
+                    })
+
+
+
+
+            }catch(err){
+                console.log(PREFIX + " DBDriver_addInHistory request failed : " + err);
+                reject(err);
+            }
+
+
+        } );
+
+    }
+    DBDriver_updateState ( id, newstatus ){
+
+
+
+        return new Promise( ( resolve, reject ) => {
+            try {
+
+                var SQLUpdate = 'UPDATE ' + DB_TABLE_IDFORM + ' SET state = ' + newstatus + ' WHERE ' + " formid = '" + id + "'"
+
+                console.log( "DBDriver_updateState: " + SQLUpdate );
+                this.query(SQLUpdate)
+                    .then(rows => {
+
+                        resolve(rows);
+
+
+                    }, function (error) {
+
+
+                        console.log(PREFIX + "DBDriver_updateState history select failed: " + JSON.stringify(error));
+                        reject(error);
+
+                    })
+
+
+
+
+            }catch(err){
+                console.log(PREFIX + " DBDriver_updateState request failed : " + err);
+                reject(err);
+            }
+
+
+        } );
+
+    }
     escape(str) {
         return mysql.escape(str);
     }
