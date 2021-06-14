@@ -287,6 +287,42 @@ class DBDriver {
         } );
 
     }
+    DBDriver_updateHistoryChild( id, newstatus ){
+
+
+
+        return new Promise( ( resolve, reject ) => {
+            try {
+
+                const SQLUpdate = 'UPDATE ' + DB_TABLE_IDFORM + ' SET historyChild = ' + newstatus + ' WHERE ' + " formid = '" + id + "'";
+
+                console.log( "DBDriver_updateHistoryChild: " + SQLUpdate );
+                this.query(SQLUpdate)
+                    .then(rows => {
+
+                        resolve(rows);
+
+
+                    }, function (error) {
+
+
+                        console.log(PREFIX + "DBDriver_updateHistoryChild history select failed: " + JSON.stringify(error));
+                        reject(error);
+
+                    })
+
+
+
+
+            }catch(err){
+                console.log(PREFIX + " DBDriver_updateHistoryChild request failed : " + err);
+                reject(err);
+            }
+
+
+        } );
+
+    }
     escape(str) {
         return mysql.escape(str);
     }

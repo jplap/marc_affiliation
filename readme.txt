@@ -49,4 +49,15 @@ lancer le server node ( independant de la fenetre)
  sinon
     nohup node -r esm serverhttps.js &
 
+test requete
+-----------
+    curl  POST http://192.168.0.37:8686/service/backend/form/synchronize?api_key=undefined
 
+install MySQL MariaDB
+---------------------
+    https://raspberrytips.com/install-mariadb-raspberry-pi/
+
+    Si le server node a des pb de connexion à la base :
+        https://www.codegrepper.com/code-examples/sql/mariadb+ER_NOT_SUPPORTED_AUTH_MODE%3A+Client+does+not+support+authentication+protocol+requested+by+server%3B+consider+upgrading+MariaDB+client
+    Si le client HeidiSQL Windows n'arrive pas a se connecter sur la base MariaDB de Linux
+        https://www.tecmint.com/fix-error-1130-hy000-host-not-allowed-to-connect-mysql/

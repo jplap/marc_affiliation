@@ -175,7 +175,7 @@ exports.synchronize = function (req, res) {
                                                 dbDriver.DBDriver_iSChildExistInHistory(identifier, options)
                                                     .then((opt) => {
 
-                                                        console.log("historyChildExist: " + opt.historyChildExist);
+                                                        console.log("historyChildExist id: "+ identifier + " historyChildExist:" +opt.historyChildExist);
                                                         dbDriver.DBDriver_addFormId(opt)
                                                             .then(() => {
                                                                 nbrBlkAdded++;
@@ -483,6 +483,12 @@ exports.addConversion = function (req, res) {
 
 
                             console.log(PREFIX + "addConversion insert in history table done");
+                            let newHistoryChild = 1;
+                            dbDriver.DBDriver_updateHistoryChild(id, newHistoryChild).then(() => {
+                                console.log(PREFIX + "update historyChild status:" + newHistoryChild );
+                            }, function (erreur) {
+
+                            })
 
 
                         }, function (erreur) {
