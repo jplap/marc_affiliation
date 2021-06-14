@@ -36,4 +36,7 @@ https://docs.github.com/en/github/authenticating-to-github/testing-your-ssh-conn
 Affilae:
 --------
 
-
+Recuperation du code
+--------------------
+git clone https://github.com/jplap/marc_affiliation
+git pull

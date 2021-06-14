@@ -18,7 +18,7 @@ exports.advertiser = function (req, res) {
         console.log(PREFIX + " affilae response successfull");
         res.status(200).send(response.body);
     }, function (erreur) {
-        res.status(500).send('affilae response failed');
+        res.status(500).send('affilae response failed erreur:' + erreur);
     })
 
 

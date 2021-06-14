@@ -1,11 +1,11 @@
 //const connection = mysql.createConnection({host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, DBDriver: process.env.DB_NAME, connectionLimit: 5});
 //import {Database} from "./Database";
 
-var mysql = require('mysql');
+import dotenv from "dotenv";
 
-const dotenv = require("dotenv");
-var path = require('path');
-var direnv = path.join(__dirname, '..', 'config.env')
+const mysql = require('mysql');
+const path = require('path');
+const direnv = path.join(__dirname, '..', 'config.env');
 console.log(PREFIX + "direnv: " + direnv);
 dotenv.config({path: direnv});
 
@@ -14,8 +14,8 @@ console.log("DB_USER: " + process.env.DB_USER);
 console.log("DB_TABLE_IDFORM: " + process.env.DB_TABLE_IDFORM);
 console.log("DB_TABLE_IDFORM_HISTORY: " + process.env.DB_TABLE_IDFORM_HISTORY);
 
-var DB_TABLE_IDFORM = process.env.DB_TABLE_IDFORM;
-var DB_TABLE_IDFORM_HISTORY = process.env.DB_TABLE_IDFORM_HISTORY;
+const DB_TABLE_IDFORM = process.env.DB_TABLE_IDFORM;
+const DB_TABLE_IDFORM_HISTORY = process.env.DB_TABLE_IDFORM_HISTORY;
 
 var PREFIX = "DBDriver: ";
 
@@ -40,16 +40,16 @@ class DBDriver {
     DBDriver_addFormId(options /* identifier, programId, status, theStrValue, escProram, historyChildExist*/) {
         return new Promise((resolve, reject) => {
             try {
-                var history = 0
-                if (options.historyChildExist == true) {
+                let history = 0;
+                if (options.historyChildExist === true) {
                     history = 1;
                 }
-                var created_at = options.created_at; //new Date("July 1, 1978 02:30:00");
+                const created_at = options.created_at; //new Date("July 1, 1978 02:30:00");
                 /*if (options.created_at) {
                     created_at = new Date(options.created_at * 1000).toLocaleDateString();
                 }*/
                 //dbQueryStarted = dbQueryStarted + 1;
-                var insertStr = "INSERT INTO " + DB_TABLE_IDFORM + " (formid,programTitle,programId,state,historyChild,affilae_data,creation_date)" + " VALUES ('" + options.identifier + "'," + options.escProram + ",'" + options.programId + "'," + 0 + "," + history + ",'" + options.theStrValue + "'," + created_at + ")"
+                const insertStr = "INSERT INTO " + DB_TABLE_IDFORM + " (formid,programTitle,programId,state,historyChild,affilae_data,creation_date)" + " VALUES ('" + options.identifier + "'," + options.escProram + ",'" + options.programId + "'," + 0 + "," + history + ",'" + options.theStrValue + "'," + created_at + ")";
                 this.query( insertStr )
                     .then(rows => {
 
@@ -76,11 +76,11 @@ class DBDriver {
             try {
 
 
-                var SQLCheckHistory = "SELECT formid_original FROM " + DB_TABLE_IDFORM_HISTORY + " WHERE formid_original = '" + id + "'";
+                const SQLCheckHistory = "SELECT formid_original FROM " + DB_TABLE_IDFORM_HISTORY + " WHERE formid_original = '" + id + "'";
                 console.log( "SQLCheckHistory: " + SQLCheckHistory );
                 this.query(SQLCheckHistory)
                     .then(rows => {
-                        var status = false;
+                        let status = false;
                         if ( rows && rows.length === 0 ){
                             console.log(PREFIX + "DBDriver_iSChildExistInHistory id: " + id + " FALSE in history table");
                         }else{
@@ -115,7 +115,7 @@ class DBDriver {
             try {
 
 
-                var SQLSelectHistory = 'SELECT * FROM ' + DB_TABLE_IDFORM_HISTORY + ' WHERE ' + " formid_original = '" + id + "'";
+                const SQLSelectHistory = 'SELECT * FROM ' + DB_TABLE_IDFORM_HISTORY + ' WHERE ' + " formid_original = '" + id + "'";
                 console.log( "DBDriver_findInHistory: " + SQLSelectHistory );
                 this.query(SQLSelectHistory)
                     .then(rows => {
@@ -150,7 +150,7 @@ class DBDriver {
             try {
 
 
-                var SQLSelectFormTable = 'SELECT * FROM ' + DB_TABLE_IDFORM;
+                const SQLSelectFormTable = 'SELECT * FROM ' + DB_TABLE_IDFORM;
                 console.log( "DBDriver_fetchFormTable: " + SQLSelectFormTable );
                 this.query(SQLSelectFormTable)
                     .then(rows => {
@@ -187,9 +187,9 @@ class DBDriver {
             try {
 
 
-                var DBDriver_deleteFormTable = 'DELETE FROM ' + DB_TABLE_IDFORM + ' WHERE ' + " id = " + id;
-                console.log( "DBDriver_fetchFormTable: " + SQLDeleteFormTable );
-                this.query(SQLDeleteFormTable)
+                const SQL_deleteFormTable = 'DELETE FROM ' + DB_TABLE_IDFORM + ' WHERE ' + ' id = ' + id;
+                console.log( "DBDriver_fetchFormTable: " + SQL_deleteFormTable );
+                this.query(SQL_deleteFormTable)
                     .then(rows => {
 
                         resolve(rows);
@@ -222,7 +222,7 @@ class DBDriver {
         return new Promise( ( resolve, reject ) => {
             try {
 
-                var SQLInsertHistory = "INSERT INTO " + DB_TABLE_IDFORM_HISTORY + " (formid_original,formid,affilae_conversion)" + " VALUES ('" + id + "','" + theNewFormId + "','" + theStrValue + "')"
+                const SQLInsertHistory = "INSERT INTO " + DB_TABLE_IDFORM_HISTORY + " (formid_original,formid,affilae_conversion)" + " VALUES ('" + id + "','" + theNewFormId + "','" + theStrValue + "')";
 
                 console.log( "DBDriver_addInHistory: " + SQLInsertHistory );
                 this.query(SQLInsertHistory)
@@ -258,7 +258,7 @@ class DBDriver {
         return new Promise( ( resolve, reject ) => {
             try {
 
-                var SQLUpdate = 'UPDATE ' + DB_TABLE_IDFORM + ' SET state = ' + newstatus + ' WHERE ' + " formid = '" + id + "'"
+                const SQLUpdate = 'UPDATE ' + DB_TABLE_IDFORM + ' SET state = ' + newstatus + ' WHERE ' + " formid = '" + id + "'";
 
                 console.log( "DBDriver_updateState: " + SQLUpdate );
                 this.query(SQLUpdate)

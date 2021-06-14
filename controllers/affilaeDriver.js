@@ -1,28 +1,25 @@
-var path = require('path');
+const path = require('path');
 const dotenv = require("dotenv");
 
-var PREFIX = "affilaeDriver: ";
-var request = require('request');
+const PREFIX = "affilaeDriver: ";
+const request = require('request');
 
-var direnv = path.join(__dirname, '..', 'config.env')
+const direnv = path.join(__dirname, '..', 'config.env');
 console.log(PREFIX +" direnv: " + direnv);
 dotenv.config({path: direnv});
 
-var affilaeDriver = require('../controllers/affilaeDriver');
-var AFFILAE_USER = process.env.AFFILAE_USER;
-var AFFILAE_PWD = process.env.AFFILAE_PWD;
-
-
-
+const affilaeDriver = require('../controllers/affilaeDriver');
+const AFFILAE_USER = process.env.AFFILAE_USER;
+const AFFILAE_PWD = process.env.AFFILAE_PWD;
 
 
 exports.programListCaller = function (){
         return new Promise( ( resolve, reject ) => {
             try {
-                var username = AFFILAE_USER;
-                var password = AFFILAE_PWD;
+                const username = AFFILAE_USER;
+                const password = AFFILAE_PWD;
 
-                var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
+                const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
                 request.get('https://api.affilae.com/2.0/advertiser', {
                     headers: {
                         "Authorization": auth
@@ -52,48 +49,47 @@ exports.programListCaller = function (){
 exports.conversionsListCaller = function ( programId, limit ){
 
 
-        var p1 = new Promise( ( resolve, reject ) => {
-            try {
-                var username = AFFILAE_USER;
-                var password = AFFILAE_PWD;
+    const p1 = new Promise((resolve, reject) => {
+        try {
+            var username = AFFILAE_USER;
+            var password = AFFILAE_PWD;
 
-                var url = 'https://api.affilae.com/2.0/advertiser/' + programId +'/conversions?count=1'
+            var url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions?count=1'
 
-                var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
-                request.get(url, {
-                    headers: {
-                        "Authorization": auth
-                    }
-                }, function (error, response, body) {
-                    if (error) {
-                        console.log(PREFIX + error)
+            var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
+            request.get(url, {
+                headers: {
+                    "Authorization": auth
+                }
+            }, function (error, response, body) {
+                if (error) {
+                    console.log(PREFIX + error)
 
-                        reject(error);
-                        //res.status(500).send('affilae response failed');
-                    } else {
-
-
-                        affilaeDriver.conversionsListWithLimitCaller(programId, response.body ).then((resp) => {
-                            resolve(resp);
-                        }, function (erreur) {
-                            reject(erreur);
-                        })
-                        //res.status(200).send(response.body);
-                    }
+                    reject(error);
+                    //res.status(500).send('affilae response failed');
+                } else {
 
 
-                });
-            }catch(error){
-                console.log(PREFIX + " conversion request failed : " + error);
-                reject(error);
-            }
+                    affilaeDriver.conversionsListWithLimitCaller(programId, response.body).then((resp) => {
+                        resolve(resp);
+                    }, function (erreur) {
+                        reject(erreur);
+                    })
+                    //res.status(200).send(response.body);
+                }
 
 
-        })
+            });
+        } catch (error) {
+            console.log(PREFIX + " conversion request failed : " + error);
+            reject(error);
+        }
 
 
+    });
 
-       return Promise.all([
+
+    return Promise.all([
            p1.catch(error => {
                return(error); }),
            /*p2.catch(error => {
@@ -125,12 +121,12 @@ exports.conversionsListWithLimitCaller = function ( programId, limit ){
 
         return new Promise( ( resolve, reject ) => {
             try {
-                var username = AFFILAE_USER;
-                var password = AFFILAE_PWD;
+                const username = AFFILAE_USER;
+                const password = AFFILAE_PWD;
 
-                var url = 'https://api.affilae.com/2.0/advertiser/' + programId +'/conversions?limit=' + limit
+                const url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions?limit=' + limit;
 
-                var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
+                const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
                 request.get(url, {
                     headers: {
                         "Authorization": auth
@@ -161,12 +157,12 @@ exports.conversionsListWithLimitCaller = function ( programId, limit ){
 exports.conversionsByIdCaller = function ( programId, id ){
         return new Promise( ( resolve, reject ) => {
             try {
-                var username = AFFILAE_USER;
-                var password = AFFILAE_PWD;
+                const username = AFFILAE_USER;
+                const password = AFFILAE_PWD;
 
-                var url = 'https://api.affilae.com/2.0/advertiser/' + programId +'/conversions/' + id
+                const url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions/' + id;
 
-                var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
+                const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
                 request.get(url, {
                     headers: {
                         "Authorization": auth
@@ -196,8 +192,8 @@ exports.conversionsByIdCaller = function ( programId, id ){
 exports.addConversionCaller = function ( programId, id, partnership_id, amount, commission, rule_Id ){
         return new Promise( ( resolve, reject ) => {
             try {
-                var username = AFFILAE_USER;
-                var password = AFFILAE_PWD;
+                const username = AFFILAE_USER;
+                const password = AFFILAE_PWD;
 
 
                 var body = {}
@@ -208,11 +204,9 @@ exports.addConversionCaller = function ( programId, id, partnership_id, amount, 
                 body.rule_id = rule_Id;
 
 
+                const url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions/add';
 
-
-                var url = 'https://api.affilae.com/2.0/advertiser/' + programId +'/conversions/add'
-
-                var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
+                const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
                 request.post(url, {
                     headers: {
                         "Authorization": auth,
