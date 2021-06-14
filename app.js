@@ -33,7 +33,7 @@ app.use(function(req, res, next) {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-function getUnauthorizedResponse(req) {
+/*function getUnauthorizedResponse(req) {
   return req.auth
       ? ('Credentials ' + req.auth.user + ':' + req.auth.password + ' rejected')
       : 'No credentials provided'
@@ -43,7 +43,7 @@ app.use(basicAuth({
             'jpl': 'jpl',
   },
   unauthorizedResponse: getUnauthorizedResponse
-}))
+}))*/
 
 
 
