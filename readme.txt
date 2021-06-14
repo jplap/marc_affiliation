@@ -42,5 +42,9 @@ git clone https://github.com/jplap/marc_affiliation
 git pull
 
 lancer le server node ( independant de la fenetre)
+ attention derrier un proxy qui reroute vers http
+ lancer
+    nohup node -r esm server.js &
 
- nohup node -r esm serverhttps.js &
+ sinon
+    nohup node -r esm serverhttps.js &
