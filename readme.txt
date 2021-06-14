@@ -36,7 +36,11 @@ https://docs.github.com/en/github/authenticating-to-github/testing-your-ssh-conn
 Affilae:
 --------
 
-Recuperation du code
---------------------
+Recuperation du code sur rasberry
+--------------------------------
 git clone https://github.com/jplap/marc_affiliation
 git pull
+
+lancer le server node ( independant de la fenetre)
+
+ nohup node -r esm serverhttps.js &

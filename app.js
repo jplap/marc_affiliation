@@ -45,6 +45,8 @@ app.use(basicAuth({
   unauthorizedResponse: getUnauthorizedResponse
 }))
 
+
+
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({
   limit: '50mb',
@@ -59,8 +61,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/affilae', affilaeRouter);
-app.use('/form', idRouter);
+app.use('/service/backend/affilae', affilaeRouter);
+app.use('/service/backend/form', idRouter);
 
 
 // catch 404 and forward to error handler
