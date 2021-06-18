@@ -5,7 +5,7 @@ const PREFIX = "affilaeDriver: ";
 const request = require('request');
 
 const direnv = path.join(__dirname, '..', 'config.env');
-console.log(PREFIX +" direnv: " + direnv);
+console.log(PREFIX +" config path: " + direnv);
 dotenv.config({path: direnv});
 
 const affilaeDriver = require('../controllers/affilaeDriver');
@@ -95,7 +95,7 @@ exports.conversionsListCaller = function ( programId, limit ){
            /*p2.catch(error => {
                return(error); }),*/
        ]).then(values => {
-           console.log(values[0]); // "p1_resolution_retardee"
+           //console.log(values[0]); // "p1_resolution_retardee"
            /*console.log(values[1]); // "Error: p2_rejet_immediat"
            if ( values[0] && values[0].body && values[1] ){
                values[1].count = values[0].body;

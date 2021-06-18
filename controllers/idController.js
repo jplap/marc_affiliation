@@ -1,12 +1,24 @@
 
+const path = require('path');
+const dotenv = require("dotenv");
+
+const PREFIX = "idController: ";
+
+
+const direnv = path.join(__dirname, '..', 'config.env');
+console.log(PREFIX +" config path: " + direnv);
+dotenv.config({path: direnv});
+
+
+const DEBUG_ACTIVATION = process.env.DEBUG_ACTIVATION;
 
 
 import {DBDriver} from "./DBDriver";
 
 const affilaeDriver = require('../controllers/affilaeDriver');
 
-const PREFIX = "idController: ";
 
+console.log( PREFIX + " DEBUG_ACTIVATION:" + DEBUG_ACTIVATION )
 
 const dbDriver = new DBDriver();
 
@@ -25,7 +37,9 @@ const isAlreadyInDB = (databaseContent, affilaeIdentifier) => {
 
         }
     }
-    console.log("isAlreadyInDB flag: " + flag + " for : " + affilaeIdentifier + " database lg: " + databaseContent.length);
+    if ( DEBUG_ACTIVATION === "true" ) {
+        console.log("isAlreadyInDB flag: " + flag + " for : " + affilaeIdentifier + " database lg: " + databaseContent.length);
+    }
     return flag
 
 };
@@ -62,6 +76,7 @@ exports.synchronize = function (req, res) {
         result.info = InfoBlk;
         res.status(200).send(result);
     };
+    console.log(PREFIX + "synchronize before programListCaller");
     affilaeDriver.programListCaller().then((response) => {
 
         if (response.body) {
@@ -85,13 +100,11 @@ exports.synchronize = function (req, res) {
                 if (affilaeResponse.body) {
                     const affilaeContent = JSON.parse(affilaeResponse.body);
 
-                    console.log("conversionsListCaller: " + affilaeResponse.body);
+                    //console.log("conversionsListCaller: " + affilaeResponse.body);
                     let dbCounter = 0;
                     let dbQueryStarted = 0;
                     dbDriver.DBDriver_fetchFormTable()
 
-
-                        //database.query('SELECT * FROM ' + DB_TABLE_IDFORM)
                         .then(rows => {
 
                             let i;

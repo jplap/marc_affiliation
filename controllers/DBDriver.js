@@ -1,6 +1,6 @@
 //const connection = mysql.createConnection({host: process.env.DB_HOST, user: process.env.DB_USER, password: process.env.DB_PASSWORD, DBDriver: process.env.DB_NAME, connectionLimit: 5});
 //import {Database} from "./Database";
-
+var PREFIX = "DBDriver: ";
 import dotenv from "dotenv";
 
 const mysql = require('mysql');
@@ -17,7 +17,7 @@ console.log("DB_TABLE_IDFORM_HISTORY: " + process.env.DB_TABLE_IDFORM_HISTORY);
 const DB_TABLE_IDFORM = process.env.DB_TABLE_IDFORM;
 const DB_TABLE_IDFORM_HISTORY = process.env.DB_TABLE_IDFORM_HISTORY;
 
-var PREFIX = "DBDriver: ";
+
 
 class DBDriver {
     constructor() {

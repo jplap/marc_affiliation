@@ -61,3 +61,20 @@ install MySQL MariaDB
         https://www.codegrepper.com/code-examples/sql/mariadb+ER_NOT_SUPPORTED_AUTH_MODE%3A+Client+does+not+support+authentication+protocol+requested+by+server%3B+consider+upgrading+MariaDB+client
     Si le client HeidiSQL Windows n'arrive pas a se connecter sur la base MariaDB de Linux
         https://www.tecmint.com/fix-error-1130-hy000-host-not-allowed-to-connect-mysql/
+
+relancer mql
+-----------
+    sudo service mysql restart
+
+tester si Mariadb est demarré
+-----------------------------
+    sudo netstat -pant | grep 3306
+
+
+Declarer le server comme un service
+----------------------------------
+    https://simonprickett.medium.com/writing-a-systemd-service-in-node-js-on-raspberry-pi-be88d9bc2e8d
+    sudo systemctl start marc_affiliation.service
+    sudo systemctl start marc_affiliation.service
+    sudo systemctl start marc_affiliation.service
+

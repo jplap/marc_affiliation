@@ -1,0 +1,14 @@
+[Unit]
+Description=Timestamp Service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/nodeproject/marc_affiliation
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+User=pi
+Environment=PORT=8686
+
+[Install]
+WantedBy=multi-user.target
+
