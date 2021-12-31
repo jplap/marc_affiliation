@@ -78,3 +78,18 @@ Declarer le server comme un service
     sudo systemctl start marc_affiliation.service
     sudo systemctl start marc_affiliation.service
 
+Creer une image docker du backend
+---------------------------------
+    attention dans un premier temps ei la connection à la bas mariadb se fait debuips le container vers la base qui est sur le Pi
+    build:
+        docker build -t marc_affiliation_backend:dev .
+    run:
+        docker run -it --rm  -v ${PWD}:/app -v /app/node_modules -e CHOKIDAR_USEPOLLING=true -p 8686:8686 marc_affiliation_backend:dev
+
+Appels AFFILAEA
+--------------
+La cle API Wordpress est representé e dans lefichier config.env sour la variable d'env:
+    AFFILAE_USER='5f85bcee6c7218455e78823c'
+son pwd est...
+    AFFILAE_PWD='b67878ddecd4066b75f9f035ed80429d'
+

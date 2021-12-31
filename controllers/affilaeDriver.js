@@ -1,8 +1,10 @@
 const path = require('path');
 const dotenv = require("dotenv");
+const moment = require("moment");
 
 const PREFIX = "affilaeDriver: ";
 const request = require('request');
+const fs = require('fs');
 
 const direnv = path.join(__dirname, '..', 'config.env');
 console.log(PREFIX +" config path: " + direnv);
@@ -12,25 +14,90 @@ const affilaeDriver = require('../controllers/affilaeDriver');
 const AFFILAE_USER = process.env.AFFILAE_USER;
 const AFFILAE_PWD = process.env.AFFILAE_PWD;
 
+const AFFILAE_CAPTURE = process.env.AFFILAE_CAPTURE;
+
+const mkdirSync = function (dirPath) {
+    try {
+        fs.mkdirSync(dirPath)
+    } catch (err) {
+        if (err.code !== "EEXIST") throw err
+    }
+}
+var snoopperDir = "";
+let snoopperAdvertiserFilePath = "";
+let snoopperAdvertiserConversionFilePath = "";
+let snoopperAdvertiserConversionLimitFilePath = "";
+let snoopperAdvertiserConversionByIdFilePath = "";
+let snoopperAdvertiserConversionAddFilePath = "";
+if ( AFFILAE_CAPTURE == "true" ) {
+
+    var formattedDate = moment(new Date()).format('YYYY-MM-DD_HH-mm-ss');
+    snoopperDir = path.join(__dirname, '..', "log","affilae_capture_" + formattedDate);
+    console.log( PREFIX + "Directory capture path:" + snoopperDir)
+    mkdirSync(snoopperDir);
+    snoopperAdvertiserFilePath = path.join(snoopperDir, 'list');
+    snoopperAdvertiserConversionFilePath = path.join(snoopperDir, 'conversion');
+    snoopperAdvertiserConversionLimitFilePath = path.join(snoopperDir, 'conversionLimit');
+    snoopperAdvertiserConversionByIdFilePath = path.join(snoopperDir, 'conversionById');
+    snoopperAdvertiserConversionAddFilePath = path.join(snoopperDir, 'conversionAdd');
+}
+
+function snooperAdd ( snooperPath, verb, url, request, response, error ){
+
+    if ( AFFILAE_CAPTURE == "true" ) {
+        var snoopperData = {}
+        snoopperData.url = url;
+        if (verb){
+            snoopperData.verb = verb;
+        }
+        if (request){
+            snoopperData.request = request;
+        }
+
+        if ( error ) {
+            snoopperData.error = error;
+        }else{
+            snoopperData.response = {};
+            snoopperData.response.body = JSON.parse(response.body);
+            snoopperData.response.statusCode = response.statusCode
+        }
+
+        var formattedDate = moment(new Date()).format('YYYY-MM-DD_HH-mm-ss');
+        var filePath = snooperPath + "_" + formattedDate
+
+        fs.writeFile(filePath, JSON.stringify(snoopperData), function (err) {
+            if (err) throw err;
+            console.log(PREFIX + 'file ' + filePath + ' created');
+        });
+    }
+}
 
 exports.programListCaller = function (){
         return new Promise( ( resolve, reject ) => {
             try {
+
+                const url = "https://api.affilae.com/2.0/advertiser";
                 const username = AFFILAE_USER;
                 const password = AFFILAE_PWD;
 
+                let verb = "GET";
+
                 const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
-                request.get('https://api.affilae.com/2.0/advertiser', {
+                request.get(url, {
                     headers: {
                         "Authorization": auth
                     }
                 }, function (error, response, body) {
                     if (error) {
-                        console.log(PREFIX + error)
+                        console.log(PREFIX + error);
+                        snooperAdd(snoopperAdvertiserFilePath, verb,url,  null ,null, error  );
+
 
                         reject(error);
                         //res.status(500).send('affilae response failed');
                     } else {
+
+                        snooperAdd(snoopperAdvertiserFilePath, verb,url, null ,response, null  );
 
                         resolve(response);
                         //res.status(200).send(response.body);
@@ -39,7 +106,7 @@ exports.programListCaller = function (){
 
                 });
             }catch(err){
-                console.log(PREFIX + " request failed err: " + err);
+                console.log(PREFIX + " list request failed err: " + err);
             }
 
 
@@ -56,6 +123,8 @@ exports.conversionsListCaller = function ( programId, limit ){
 
             var url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions?count=1'
 
+            let verb = "GET";
+
             var auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
             request.get(url, {
                 headers: {
@@ -64,13 +133,13 @@ exports.conversionsListCaller = function ( programId, limit ){
             }, function (error, response, body) {
                 if (error) {
                     console.log(PREFIX + error)
-
+                    snooperAdd(snoopperAdvertiserConversionFilePath, verb,url, null ,null, error  );
                     reject(error);
                     //res.status(500).send('affilae response failed');
                 } else {
 
-
-                    affilaeDriver.conversionsListWithLimitCaller(programId, response.body).then((resp) => {
+                        snooperAdd(snoopperAdvertiserConversionFilePath, verb,url, null ,response, null  );
+                        affilaeDriver.conversionsListWithLimitCaller(programId, response.body).then((resp) => {
                         resolve(resp);
                     }, function (erreur) {
                         reject(erreur);
@@ -125,7 +194,7 @@ exports.conversionsListWithLimitCaller = function ( programId, limit ){
                 const password = AFFILAE_PWD;
 
                 const url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions?limit=' + limit;
-
+                let verb = "GET";
                 const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
                 request.get(url, {
                     headers: {
@@ -134,11 +203,11 @@ exports.conversionsListWithLimitCaller = function ( programId, limit ){
                 }, function (error, response, body) {
                     if (error) {
                         console.log(PREFIX + error)
-
+                        snooperAdd(snoopperAdvertiserConversionLimitFilePath, verb,url,null , null, error  );
                         reject(error);
                         //res.status(500).send('affilae response failed');
                     } else {
-
+                        snooperAdd(snoopperAdvertiserConversionLimitFilePath, verb,url, null ,response, null  );
                         resolve(response);
                         //res.status(200).send(response.body);
                     }
@@ -161,7 +230,7 @@ exports.conversionsByIdCaller = function ( programId, id ){
                 const password = AFFILAE_PWD;
 
                 const url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions/' + id;
-
+                let verb = "GET";
                 const auth = "Basic " + new Buffer(username + ":" + password).toString("base64");
                 request.get(url, {
                     headers: {
@@ -170,11 +239,11 @@ exports.conversionsByIdCaller = function ( programId, id ){
                 }, function (error, response, body) {
                     if (error) {
                         console.log(PREFIX + error)
-
+                        snooperAdd(snoopperAdvertiserConversionByIdFilePath, verb,url,null , null, error  );
                         reject(error);
                         //res.status(500).send('affilae response failed');
                     } else {
-
+                        snooperAdd(snoopperAdvertiserConversionByIdFilePath, verb,url, null ,response, null  );
                         resolve(response);
                         //res.status(200).send(response.body);
                     }
@@ -196,13 +265,14 @@ exports.addConversionCaller = function ( programId, id, partnership_id, amount, 
                 const password = AFFILAE_PWD;
 
 
-                var body = {}
-                body.identifier = id;
-                body.partnership_id = partnership_id;
-                body.amount = amount;
-                body.commission = commission;
-                body.rule_id = rule_Id;
+                var reqBody = {}
+                reqBody.identifier = id;
+                reqBody.partnership_id = partnership_id;
+                reqBody.amount = amount;
+                reqBody.commission = commission;
+                reqBody.rule_id = rule_Id;
 
+                let verb = "POST";
 
                 const url = 'https://api.affilae.com/2.0/advertiser/' + programId + '/conversions/add';
 
@@ -212,15 +282,16 @@ exports.addConversionCaller = function ( programId, id, partnership_id, amount, 
                         "Authorization": auth,
                         'Content-Type': 'application/json'
                     },
-                    body:JSON.stringify(body)
+                    body:JSON.stringify(reqBody)
                 }, function (error, response, body) {
                     if (error) {
                         console.log(PREFIX + " add conversio failed: " + error)
-
+                        snooperAdd(snoopperAdvertiserConversionAddFilePath, verb,url,JSON.stringify(reqBody) , null, error  );
                         reject(error);
                         //res.status(500).send('affilae response failed');
                     } else {
                         console.log(PREFIX + " add conversion sucessfuly: " + JSON.stringify(response));
+                        snooperAdd(snoopperAdvertiserConversionAddFilePath, verb,url, JSON.stringify(reqBody) ,response, null  );
                         resolve(response);
                         //res.status(200).send(response.body);
                     }
