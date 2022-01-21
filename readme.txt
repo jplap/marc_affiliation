@@ -61,6 +61,41 @@ install MySQL MariaDB
         https://www.codegrepper.com/code-examples/sql/mariadb+ER_NOT_SUPPORTED_AUTH_MODE%3A+Client+does+not+support+authentication+protocol+requested+by+server%3B+consider+upgrading+MariaDB+client
     Si le client HeidiSQL Windows n'arrive pas a se connecter sur la base MariaDB de Linux
         https://www.tecmint.com/fix-error-1130-hy000-host-not-allowed-to-connect-mysql/
+        Pour connaitre les hosts autorisés à ce connecter:
+            sudo mysql -u root -p
+            SELECT host FROM mysql.user WHERE user = "root";
+                    +--------------+
+                    | host         |
+                    +--------------+
+                    | 127.0.0.1    |
+                    | 192.168.0.25 |
+                    | localhost    |
+                    +--------------+
+        connaitre les noms de databasename
+            MariaDB [(none)]> SHOW DATABASES;
+            +--------------------+
+            | Database           |
+            +--------------------+
+            | information_schema |
+            | mysql              |
+            | performance_schema |
+            | uuidformDB         |
+            +--------------------+
+
+        Pour ajouter une autorisation de machine
+            GRANT ALL ON uuidformDB to 'root'@'192.168.0.32' IDENTIFIED BY 'root';
+            FLUSH PRIVILEGES;
+            SELECT host FROM mysql.user WHERE user = "root";
+                +--------------+
+                | host         |
+                +--------------+
+                | 127.0.0.1    |
+                | 192.168.0.25 |
+                | 192.168.0.32 |
+                | localhost    |
+                +--------------+
+
+
 
 relancer mql
 -----------
@@ -70,13 +105,17 @@ tester si Mariadb est demarré
 -----------------------------
     sudo netstat -pant | grep 3306
 
+Creer un service
+----------------
 
-Declarer le server comme un service
+
+Creer et Declarer le server comme un service
 ----------------------------------
+    Creer service marc_affiliation.service le copier dans /etc/systemd/system
+
     https://simonprickett.medium.com/writing-a-systemd-service-in-node-js-on-raspberry-pi-be88d9bc2e8d
     sudo systemctl start marc_affiliation.service
-    sudo systemctl start marc_affiliation.service
-    sudo systemctl start marc_affiliation.service
+
 
 Creer une image docker du backend
 ---------------------------------
@@ -92,4 +131,18 @@ La cle API Wordpress est representé e dans lefichier config.env sour la variabl
     AFFILAE_USER='5f85bcee6c7218455e78823c'
 son pwd est...
     AFFILAE_PWD='b67878ddecd4066b75f9f035ed80429d'
+
+Bug 21/01/2022
+===============
+    Symptome:
+     rien dans le nagigateur alors que le fetch retourne des data
+    Cause:
+        Le parsing json du retour des fonnes de Fetch foire
+    Raison
+      La bas e de données contient un json de la colonne affilae_data qui est composé d'un truc du style
+           "refuse_reason":".\n"
+       Le \n fou la merde et n'est pas parsable dans l'appli React
+    By pass:
+      Modification des donnees à la main dans la base
+      Je ne sais pas qui value cette merde \n sur l'attribut refuse_reason
 
